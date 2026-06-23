@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  .shop-tile{transition:transform .3s ease,border-color .3s ease;}
+  .shop-tile:hover{transform:translateY(-4px);border-color:rgba(239,98,169,.45);}
+  .shop-tile-foot{transition:background .25s ease;}
+  .shop-tile:hover .shop-tile-foot{background:rgba(239,98,169,.14);}
+  .shop-card{transition:transform .3s ease,border-color .3s ease;}
+  .shop-card:hover{transform:translateY(-3px);border-color:rgba(239,98,169,.4);}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:auto;}
+  body{margin:0;background:#06070c;}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.85}50%{transform:translateY(7px);opacity:1}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,98,169,.6),0 0 16px 3px rgba(239,98,169,.5)}70%{box-shadow:0 0 0 15px rgba(239,98,169,0),0 0 16px 3px rgba(239,98,169,.5)}100%{box-shadow:0 0 0 0 rgba(239,98,169,0),0 0 16px 3px rgba(239,98,169,.5)}}
+  /* ---- About Us team: magazine editorial spread ---- */
+  .ed-spread{position:relative;left:50%;right:50%;width:100vw;margin-left:-50vw;margin-right:-50vw;background:linear-gradient(150deg,rgba(216,212,204,.26) 0%,rgba(201,196,187,.22) 52%,rgba(190,185,176,.26) 100%);backdrop-filter:blur(20px) saturate(112%);-webkit-backdrop-filter:blur(20px) saturate(112%);color:#1c1a17;overflow:hidden;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(0,0,0,.18);}
+  .ed-spread::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");mix-blend-mode:multiply;}
+  .ed-spread::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 46%,rgba(0,0,0,0) 56%,rgba(40,36,30,.22) 100%);}
+  .ed-inner{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:44px 48px 50px;display:grid;grid-template-columns:1fr minmax(280px,410px) 1fr;grid-template-rows:auto auto;column-gap:40px;row-gap:34px;align-items:start;}
+  .ed-photo{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:min(720px,60%);z-index:2;}
+  .ed-photo image-slot{width:100%;height:100%;display:block;}
+  .ed-block{position:relative;z-index:3;}
+  .ed-block.r1c1{grid-column:1;grid-row:1;}
+  .ed-block.r2c1{grid-column:1;grid-row:2;align-self:end;}
+  .ed-block.r1c3{grid-column:3;grid-row:1;transform:translateX(-32px);}
+  .ed-block.r2c3{grid-column:3;grid-row:2;align-self:end;transform:translateX(-32px);}
+  .ed-trait{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:23px;letter-spacing:.05em;color:#0d0b09;}
+  .ed-desc{margin:11px 0 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:18px;line-height:1.5;color:#1c1914;max-width:30ch;}
+  .ed-rule{width:42px;height:1px;background:#1a1714;margin:16px 0 14px;}
+  .ed-keys{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:15px;letter-spacing:.08em;line-height:1.95;color:#16130e;}
+  .ed-name{margin-top:18px;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(40px,4.6vw,70px);line-height:.9;color:#15120f;letter-spacing:.005em;}
+  .ed-wm{position:absolute;z-index:1;font-family:'Cormorant Garamond',serif;font-weight:600;color:rgba(34,30,25,.14);line-height:1;pointer-events:none;font-size:clamp(56px,10vw,140px);}
+  .ed-heart{position:absolute;z-index:4;font-size:26px;line-height:1;pointer-events:none;background:linear-gradient(145deg,#f2f2f4,#9a9aa0 38%,#d9d9de 60%,#76767c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));}
+  @media(max-width:1024px){
+    .ed-inner{grid-template-columns:1fr;grid-template-rows:none;row-gap:36px;padding:48px 28px 56px;}
+    .ed-photo{position:static;transform:none;left:auto;width:auto;grid-column:1;grid-row:auto;min-height:380px;order:-1;}
+    .ed-block.r1c1,.ed-block.r2c1,.ed-block.r1c3,.ed-block.r2c3{grid-column:1;grid-row:auto;align-self:auto;transform:none;}
+    .ed-wm{display:none;}
+  }
+  /* ---- Our Portfolio: alternating image / text rows ---- */
+  .pf-list{margin-top:40px;display:flex;flex-direction:column;gap:32px;}
+  .pf-row{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;}
+  .pf-img{aspect-ratio:4/3;background:#14101e;border:1px solid rgba(245,238,226,.14);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.4);}
+  .pf-img image-slot{width:100%;height:100%;display:block;}
+  .pf-num{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,52px);font-weight:600;color:rgba(239,98,169,.55);line-height:1;}
+  .pf-title{margin:8px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(23px,2.5vw,34px);line-height:1.1;color:#f4efe6;}
+  .pf-type{margin-top:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#d9b88a;font-weight:600;}
+  .pf-text.right{text-align:right;}
+  @media(max-width:760px){.pf-row{grid-template-columns:1fr;gap:18px;}.pf-img{order:-1;}.pf-text.right{text-align:left;}}
+  /* ---- premium CTA micro-animations: lift, arrow nudge, light sheen ---- */
+  .focus-cta{position:relative;overflow:hidden;}
+  .focus-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(240,179,95,.16);}
+  .focus-cta:active{transform:translateY(0);transition-duration:.08s;}
+  .cta-arrow{display:inline-block;transition:transform .38s cubic-bezier(.34,1.4,.5,1);}
+  .focus-cta:hover .cta-arrow{transform:translateX(5px);}
+  .focus-cta::after{content:'';position:absolute;top:0;left:-65%;width:42%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,242,214,.22),transparent);transform:skewX(-18deg);pointer-events:none;opacity:0;}
+  .focus-cta:hover::after{animation:cta-sheen .85s ease forwards;}
+  @keyframes cta-sheen{0%{left:-65%;opacity:0;}22%{opacity:1;}100%{left:135%;opacity:0;}}
+</style>
+<script src="assets/image-slot.js"></script>
+</helmet>
+
+<div style="font-family:'Hanken Grotesk',system-ui,sans-serif;color:#f3ead9;background:#06070c;">
+
+  <!-- vintage frame: darkened corners + subtle warm center bloom (sits above everything) -->
+  <div aria-hidden="true" style="position:fixed;inset:0;z-index:60;pointer-events:none;">
+    <div style="position:absolute;inset:0;background:radial-gradient(128% 112% at 50% 50%,rgba(0,0,0,0) 38%,rgba(12,5,11,.62) 72%,rgba(3,1,5,.96) 100%);"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(72% 56% at 50% 47%,rgba(255,223,186,.06),rgba(255,223,186,0) 62%);mix-blend-mode:screen;"></div>
+  </div>
+
+  <!-- ============ CINEMATIC STAGE: dive through the door ============ -->
+  <div id="cin-wrap" style="position:relative;height:520vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#05060a;isolation:isolate;">
+
+      <!-- the three exterior layers share ONE isolated, GPU-promoted wrapper so the scale
+           is a single cached-texture transform — the overlay blend resolves inside the group
+           (backdrop = the opaque exterior image) instead of re-compositing against the page each frame -->
+      <div id="cin-ext-wrap" style="position:absolute;inset:0;transform-origin:49.5% 71%;will-change:transform,opacity;isolation:isolate;backface-visibility:hidden;filter:sepia(.42) saturate(.82) contrast(1.08) brightness(.9);">
+        <img id="cin-ext" src="assets/enchanted-exterior.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div id="cin-ext-grade" style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(34,18,40,.32),rgba(58,34,18,.22) 55%,rgba(20,10,28,.4));mix-blend-mode:overlay;"></div>
+        <div id="cin-ext-vig" style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(78% 78% at 50% 50%,rgba(6,2,8,0) 28%,rgba(8,3,11,.4) 62%,rgba(6,2,9,.78) 84%,rgba(2,0,4,.96) 100%);"></div>
+      </div>
+
+      <div id="cin-glow" style="position:absolute;left:49.5%;top:71%;width:46vmax;height:46vmax;transform:translate(-50%,-50%) scale(.3);background:radial-gradient(circle,rgba(255,196,138,.95) 0%,rgba(243,110,176,.5) 35%,rgba(120,60,140,0) 70%);opacity:0;will-change:transform,opacity;pointer-events:none;"></div>
+
+      <div id="cin-intrograd" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,12,.4) 0%,rgba(6,7,12,0) 28%,rgba(6,7,12,0) 55%,rgba(6,7,12,.78) 100%);pointer-events:none;will-change:opacity;"></div>
+      <div id="cin-intro" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;padding:0 24px 7vh;will-change:opacity,transform;">
+        <div style="font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:14px;">Interactive Business Proposal</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(48px,9vw,118px);line-height:.95;letter-spacing:.02em;text-shadow:0 4px 40px rgba(239,98,169,.45);">Enchanted</div>
+        <div style="margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:#cdc4d8;animation:bob 2.2s ease-in-out infinite;">
+          <span>Scroll to step inside</span>
+          <span style="font-size:18px;line-height:1;">↓</span>
+        </div>
+      </div>
+
+      <!-- the real interior arrives as we pass through the door -->
+      <div id="cin-interior" style="position:absolute;inset:0;opacity:0;will-change:opacity,transform;background:#0a0710;">
+        <img src="assets/interior-room.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:34% 46%;">
+        <div style="position:absolute;inset:0;background:radial-gradient(125% 105% at 50% 48%,rgba(6,4,10,.15),rgba(6,4,10,.82));"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,5,12,.5),rgba(8,5,12,0) 32%,rgba(8,5,12,0) 58%,rgba(8,5,12,.78));"></div>
+      </div>
+
+      <div id="cin-title" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;opacity:0;will-change:opacity,transform;">
+        <div style="font-size:13px;letter-spacing:.44em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:18px;">Welcome inside</div>
+        <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(42px,10vw,148px);line-height:.9;letter-spacing:.08em;padding-left:.08em;text-shadow:0 0 60px rgba(239,98,169,.6),0 0 120px rgba(240,179,95,.35);">ENCHANTED</h1>
+        <div style="margin-top:14px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,3vw,34px);color:#efe2cf;text-shadow:0 2px 18px rgba(0,0,0,.6);">A gift shop like no other.</div>
+        <div style="margin-top:34px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#f6efe0;text-shadow:0 2px 16px rgba(0,0,0,.95),0 1px 4px rgba(0,0,0,.85);padding:13px 22px;border-radius:0;background:rgba(5,3,9,.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:bob 2.4s ease-in-out infinite;">
+          <span>Keep scrolling to explore</span>
+          <span style="font-size:17px;line-height:1;">↓</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ EXPLORE THE SPACE: scroll to pan, click a wall to focus ============ -->
+  <div id="room-wrap" style="position:relative;height:320vh;">
+    <div id="room-sticky" style="position:sticky;top:0;height:100vh;overflow:hidden;background:#0a0710;">
+
+      <!-- the camera (image + wall hotspots share one coordinate space so markers stay glued) -->
+      <div id="room-cam" style="position:absolute;top:50%;left:50%;height:166%;aspect-ratio:1.6 / 1;transform:translate(-50%,-50%);will-change:transform;">
+        <img src="assets/interior-room.jpg" alt="Enchanted shop interior" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+
+        <button class="room-hot" data-wall="team" type="button" style="position:absolute;left:33%;top:55%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;padding:8px;background:none;border:0;cursor:pointer;font-family:inherit;">
+          <span style="display:block;width:16px;height:16px;border-radius:50%;background:#fff;animation:pulse 2.4s ease-out infinite;"></span>
+          <span style="padding:7px 14px;border-radius:0;background:rgba(10,6,16,.72);border:1px solid rgba(255,255,255,.28);color:#f3ead9;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap;">Click To know About Us</span>
+        </button>
+
+        <button class="room-hot" data-wall="counter" type="button" style="position:absolute;left:18%;top:65%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;padding:8px;background:none;border:0;cursor:pointer;font-family:inherit;">
+          <span style="display:block;width:16px;height:16px;border-radius:50%;background:#fff;animation:pulse 2.4s ease-out infinite .25s;"></span>
+          <span style="padding:7px 14px;border-radius:0;background:rgba(10,6,16,.72);border:1px solid rgba(255,255,255,.28);color:#f3ead9;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap;">Click Here to Know about Enchanted</span>
+        </button>
+
+        <button class="room-hot" data-wall="signature" type="button" style="position:absolute;left:56%;top:43%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;padding:8px;background:none;border:0;cursor:pointer;font-family:inherit;">
+          <span style="display:block;width:16px;height:16px;border-radius:50%;background:#fff;animation:pulse 2.4s ease-out infinite .5s;"></span>
+          <span style="padding:7px 14px;border-radius:0;background:rgba(10,6,16,.72);border:1px solid rgba(255,255,255,.28);color:#f3ead9;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap;">Click Here to Know about Business</span>
+        </button>
+
+        <button class="room-hot" data-wall="boutique" type="button" style="position:absolute;left:88%;top:46%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;padding:8px;background:none;border:0;cursor:pointer;font-family:inherit;">
+          <span style="display:block;width:16px;height:16px;border-radius:50%;background:#fff;animation:pulse 2.4s ease-out infinite 1s;"></span>
+          <span style="padding:7px 14px;border-radius:0;background:rgba(10,6,16,.72);border:1px solid rgba(255,255,255,.28);color:#f3ead9;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap;">Click to Explore Boutique</span>
+        </button>
+      </div>
+
+      <!-- heads-up overlay -->
+      <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(6,4,10,.62),rgba(6,4,10,0) 24%,rgba(6,4,10,0) 70%,rgba(6,4,10,.55));"></div>
+      <div id="room-hud" style="position:absolute;top:0;left:0;right:0;padding:6vh 28px 0;text-align:center;pointer-events:none;will-change:opacity,transform;">
+        <div style="font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:14px;">Explore the space</div>
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(30px,5vw,58px);line-height:1;text-shadow:0 2px 24px rgba(0,0,0,.7);">Take a look around the shop</h2>
+        <div style="margin-top:16px;font-size:13px;letter-spacing:.06em;color:#d7cfe0;text-shadow:0 1px 10px rgba(0,0,0,.7);">Scroll to pan the room &nbsp;·&nbsp; tap a glowing wall to step closer</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ FULL-SCREEN WALL FOCUS (fixed overlay) ============ -->
+  <div id="room-focus" style="position:fixed;inset:0;z-index:200;opacity:0;pointer-events:none;background:#05030a;transition:opacity .55s ease;">
+
+    <!-- the depth/detail image that flies in toward the wall -->
+    <div id="focus-imgwrap" style="position:absolute;inset:0;opacity:0;transform:scale(1.14);transform-origin:50% 50%;transition:opacity 1s ease,transform 1.5s cubic-bezier(.33,0,.16,1);will-change:transform,opacity;">
+      <img id="focus-img" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 115% at 50% 44%,rgba(0,0,0,0) 46%,rgba(4,2,8,.74) 100%);"></div>
+    </div>
+
+    <!-- caption (signature / boutique) -->
+    <div id="focus-caption" style="position:absolute;left:0;right:0;bottom:0;padding:9vh 7vw 6vh;opacity:0;transition:opacity .7s ease;will-change:opacity;background:linear-gradient(0deg,rgba(5,3,9,.94) 0%,rgba(5,3,9,.45) 58%,rgba(5,3,9,0) 100%);">
+      <div id="focus-kicker" style="font-size:13px;letter-spacing:.4em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:14px;">The signature wall</div>
+      <h2 id="focus-title" style="margin:0 0 16px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(36px,6vw,76px);line-height:1;">Enchanted, front &amp; center</h2>
+      <p id="focus-text" style="margin:0;max-width:60ch;font-size:clamp(16px,1.8vw,21px);line-height:1.65;color:#d7cfe0;">The hero display every customer wants to photograph.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;">
+      <button id="focus-enchanted-btn" type="button" class="focus-cta" style="display:none;align-items:center;gap:12px;padding:16px 34px;border-radius:0;background:rgba(245,238,226,.04);color:#f6efe0;font-family:inherit;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(240,179,95,.55);cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .3s ease,border-color .3s ease,letter-spacing .3s ease,transform .4s cubic-bezier(.34,1.4,.5,1),box-shadow .4s ease;" style-hover="background:rgba(240,179,95,.12);border-color:#f0b35f;letter-spacing:.22em">Know About Enchanted <span class="cta-arrow" style="font-size:16px;line-height:1;letter-spacing:0;">→</span></button>
+      <button id="focus-aboutus-btn" type="button" class="focus-cta" style="display:none;align-items:center;gap:12px;padding:16px 34px;border-radius:0;background:rgba(245,238,226,.04);color:#f6efe0;font-family:inherit;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(240,179,95,.55);cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .3s ease,border-color .3s ease,letter-spacing .3s ease,transform .4s cubic-bezier(.34,1.4,.5,1),box-shadow .4s ease;" style-hover="background:rgba(240,179,95,.12);border-color:#f0b35f;letter-spacing:.22em">Know About Us <span class="cta-arrow" style="font-size:16px;line-height:1;letter-spacing:0;">→</span></button>
+      <button id="focus-biz-btn" type="button" class="focus-cta" style="display:none;align-items:center;gap:12px;padding:16px 34px;border-radius:0;background:rgba(245,238,226,.04);color:#f6efe0;font-family:inherit;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(240,179,95,.55);cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .3s ease,border-color .3s ease,letter-spacing .3s ease,transform .4s cubic-bezier(.34,1.4,.5,1),box-shadow .4s ease;" style-hover="background:rgba(240,179,95,.12);border-color:#f0b35f;letter-spacing:.22em">View Business Plan <span class="cta-arrow" style="font-size:16px;line-height:1;letter-spacing:0;">→</span></button>
+      <button id="focus-shop-btn" type="button" class="focus-cta" style="display:none;align-items:center;gap:12px;padding:16px 34px;border-radius:0;background:rgba(245,238,226,.04);color:#f6efe0;font-family:inherit;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(245,238,226,.45);cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .3s ease,border-color .3s ease,letter-spacing .3s ease,transform .4s cubic-bezier(.34,1.4,.5,1),box-shadow .4s ease;" style-hover="background:rgba(245,238,226,.1);border-color:#f3ead9;letter-spacing:.22em">What We Sell <span class="cta-arrow" style="font-size:16px;line-height:1;letter-spacing:0;">→</span></button>
+      </div>
+    </div>
+
+    <!-- plain team screen (counter sequence) -->
+    <div id="focus-plain" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .9s ease;will-change:opacity;background:radial-gradient(120% 120% at 50% 32%,#1a1024 0%,#0c0814 55%,#06040c 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10vh 7vw;">
+      <div style="font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:14px;">Our people</div>
+      <h2 style="margin:0 0 6px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(36px,6vw,76px);line-height:1;">Meet the Team</h2>
+      <p style="margin:14px auto 46px;max-width:52ch;font-size:clamp(15px,1.7vw,20px);line-height:1.6;color:#cdc6d6;">The faces behind the counter — the people who wrap every order and remember every regular.</p>
+      <div style="display:flex;gap:28px 44px;flex-wrap:wrap;justify-content:center;max-width:1000px;">
+        <div style="display:flex;align-items:center;gap:16px;min-width:240px;">
+          <div style="flex:none;width:66px;height:66px;border-radius:50%;background:linear-gradient(140deg,#ef62a9,#9a6cd8);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;color:#fff;">IM</div>
+          <div style="text-align:left;">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;line-height:1.1;">Isabella Moreno</div>
+            <div style="font-size:13px;letter-spacing:.05em;color:#cdb8d8;margin-top:3px;">Founder &amp; Lead Florist</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;min-width:240px;">
+          <div style="flex:none;width:66px;height:66px;border-radius:50%;background:linear-gradient(140deg,#f0b35f,#ef62a9);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;color:#fff;">MC</div>
+          <div style="text-align:left;">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;line-height:1.1;">Marcus Chen</div>
+            <div style="font-size:13px;letter-spacing:.05em;color:#cdb8d8;margin-top:3px;">Store Manager</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;min-width:240px;">
+          <div style="flex:none;width:66px;height:66px;border-radius:50%;background:linear-gradient(140deg,#9a6cd8,#5b8def);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;color:#fff;">PN</div>
+          <div style="text-align:left;">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;line-height:1.1;">Priya Nair</div>
+            <div style="font-size:13px;letter-spacing:.05em;color:#cdb8d8;margin-top:3px;">Gift Curator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- progress hint while the camera travels -->
+    <div id="focus-travel" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s ease;pointer-events:none;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#cabfda;z-index:4;">Approaching…</div>
+
+    <button id="focus-close" type="button" style="position:absolute;top:24px;right:24px;display:flex;align-items:center;gap:9px;padding:11px 20px 11px 15px;border-radius:0;background:rgba(12,7,18,.62);border:1px solid rgba(255,255,255,.3);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;z-index:5;">
+      <span style="font-size:17px;line-height:1;">←</span> Back to the room
+    </button>
+  </div>
+
+  <!-- ============ ABOUT — WHAT IS ENCHANTED (overlay) ============ -->
+  <div id="about-enchanted" style="position:fixed;inset:0;z-index:320;opacity:0;pointer-events:none;overflow-y:auto;transition:opacity .6s ease;background:linear-gradient(155deg,rgba(58,16,44,.72) 0%,rgba(34,12,34,.74) 50%,rgba(40,14,40,.76) 100%);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);font-family:'Hanken Grotesk',system-ui,sans-serif;color:#f3ead9;">
+
+    <!-- ambient floral-glow corners (translucent so the wall shows through) -->
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;background:
+        radial-gradient(70% 60% at 50% 38%, rgba(239,98,169,.30), rgba(239,98,169,0) 64%),
+        radial-gradient(46% 50% at 0% 0%, rgba(154,108,216,.22), rgba(154,108,216,0) 60%),
+        radial-gradient(42% 48% at 100% 4%, rgba(240,179,95,.13), rgba(240,179,95,0) 60%),
+        radial-gradient(46% 50% at 2% 100%, rgba(239,98,169,.24), rgba(239,98,169,0) 62%),
+        radial-gradient(46% 52% at 100% 100%, rgba(154,108,216,.18), rgba(154,108,216,0) 62%);"></div>
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;opacity:.9;background:radial-gradient(125% 105% at 50% 42%,rgba(0,0,0,0) 30%,rgba(4,2,8,.82) 100%);"></div>
+
+    <button id="about-close" type="button" style="position:fixed;top:24px;right:24px;display:flex;align-items:center;gap:9px;padding:11px 20px 11px 15px;border-radius:0;background:rgba(16,10,24,.66);border:1px solid rgba(255,255,255,.26);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;z-index:5;backdrop-filter:blur(8px);">
+      <span style="font-size:17px;line-height:1;">←</span> Back to the room
+    </button>
+
+    <div style="position:relative;max-width:920px;margin:0 auto;padding:14vh 32px 9vh;">
+
+      <!-- hero: copy only, room shows through as the foreground visual -->
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="color:#e8b878;font-size:20px;line-height:1;margin-bottom:14px;letter-spacing:.3em;">❦</div>
+          <div style="font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:#e8b878;font-weight:600;">About Us</div>
+          <h2 style="margin:22px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(48px,7vw,92px);line-height:.96;letter-spacing:.01em;text-shadow:0 4px 30px rgba(0,0,0,.55);">
+            <span style="display:block;color:#f4efe6;">WHAT IS</span>
+            <span style="display:block;color:#ef62a9;text-shadow:0 0 44px rgba(239,98,169,.55);">ENCHANTED?</span>
+          </h2>
+          <div style="margin:22px 0 4px;color:#cf8fb6;font-size:16px;line-height:1;">♡</div>
+          <p style="margin:18px 0 0;max-width:54ch;font-size:clamp(16px,1.7vw,20px);line-height:1.75;color:#ece6f2;text-shadow:0 2px 16px rgba(0,0,0,.8);text-wrap:pretty;">Enchanted is a creative gifting studio dedicated to transforming feelings into lasting memories. Through custom gifts, artistic designs, and thoughtful details, we turn ordinary occasions into moments people can hold onto forever.</p>
+      </div>
+
+      <!-- feature strip -->
+      <div style="margin-top:clamp(44px,5vw,64px);padding-top:clamp(34px,4vw,48px);border-top:1px solid rgba(232,184,120,.2);display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));">
+
+        <div style="padding:34px 26px;text-align:center;border-right:1px solid rgba(154,108,216,.16);">
+          <div style="display:flex;justify-content:center;margin-bottom:18px;"><img src="assets/icon-gift.png" alt="" style="display:block;width:120px;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4));"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#e8b878;">Meaningful Creations</div>
+          <p style="margin:11px 0 0;font-size:13.5px;line-height:1.6;color:#b3aac0;">Every gift is thoughtfully designed to tell a story.</p>
+        </div>
+
+        <div style="padding:34px 26px;text-align:center;border-right:1px solid rgba(154,108,216,.16);">
+          <div style="display:flex;justify-content:center;margin-bottom:18px;"><img src="assets/icon-palette.png" alt="" style="display:block;width:120px;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4));"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#e8b878;">Artistic Designs</div>
+          <p style="margin:11px 0 0;font-size:13.5px;line-height:1.6;color:#b3aac0;">Blending creativity and elegance in every handcrafted piece.</p>
+        </div>
+
+        <div style="padding:34px 26px;text-align:center;border-right:1px solid rgba(154,108,216,.16);">
+          <div style="display:flex;justify-content:center;margin-bottom:18px;"><img src="assets/icon-heart.png" alt="" style="display:block;width:120px;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4));"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#e8b878;">Emotional Connection</div>
+          <p style="margin:11px 0 0;font-size:13.5px;line-height:1.6;color:#b3aac0;">We help you express what words sometimes can't.</p>
+        </div>
+
+        <div style="padding:34px 26px;text-align:center;">
+          <div style="display:flex;justify-content:center;margin-bottom:18px;"><img src="assets/icon-award.png" alt="" style="display:block;width:120px;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4));"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#e8b878;">Lasting Memories</div>
+          <p style="margin:11px 0 0;font-size:13.5px;line-height:1.6;color:#b3aac0;">Turning special moments into keepsakes that last forever.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT US — OUR STORY / TEAM (overlay) ============ -->
+  <div id="about-us" style="position:fixed;inset:0;z-index:330;opacity:0;pointer-events:none;overflow-y:auto;transition:opacity .6s ease;background:rgba(28,12,26,.34);backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15);font-family:'Hanken Grotesk',system-ui,sans-serif;color:#f3ead9;">
+    <!-- translucent pinkish field — the wall shows through, softly blurred -->
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;background:
+        radial-gradient(76% 56% at 12% -4%, rgba(154,108,216,.22), rgba(154,108,216,0) 60%),
+        radial-gradient(66% 58% at 96% 4%, rgba(239,98,169,.24), rgba(239,98,169,0) 58%),
+        radial-gradient(90% 78% at 50% 116%, rgba(240,179,95,.12), rgba(240,179,95,0) 60%),
+        linear-gradient(155deg,rgba(239,98,169,.14) 0%,rgba(40,18,38,.12) 48%,rgba(20,10,24,.2) 100%);"></div>
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;opacity:.4;background:radial-gradient(120% 100% at 50% 50%,rgba(0,0,0,0) 58%,rgba(4,2,8,.62) 100%);"></div>
+
+    <button id="about-us-close" type="button" style="position:fixed;top:24px;right:24px;display:flex;align-items:center;gap:9px;padding:11px 20px 11px 15px;border-radius:0;background:rgba(16,10,24,.66);border:1px solid rgba(255,255,255,.26);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;z-index:5;backdrop-filter:blur(8px);">
+      <span style="font-size:17px;line-height:1;">←</span> Back to the room
+    </button>
+
+    
+  <div style="position:relative;max-width:980px;margin:0 auto;padding:13vh 32px 12vh;">
+
+      <!-- header / Our Story -->
+      <div style="font-size:12px;letter-spacing:.46em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:20px;">About Us</div>
+      <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(46px,8vw,104px);line-height:.94;letter-spacing:.01em;text-shadow:0 0 60px rgba(239,98,169,.3);">Our Story</h1>
+      <p style="margin:30px 0 0;max-width:60ch;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,2.6vw,32px);line-height:1.4;color:#efe2cf;">A simple scrapbook started everything.</p>
+      <div style="margin-top:26px;max-width:64ch;display:flex;flex-direction:column;gap:20px;font-size:clamp(16px,1.7vw,19px);line-height:1.75;color:#d7cfe0;text-wrap:pretty;">
+        <p style="margin:0;">When a friend asked us to create a personalized scrapbook as a gift, we discovered how much meaning a thoughtfully designed gift can hold. We realized every person has a unique story worth celebrating.</p>
+        <p style="margin:0;">That project inspired us to create Enchanted—a creative studio dedicated to helping people express emotions through personalized gifts and memorable experiences.</p>
+      </div>
+
+      <!-- What We Believe -->
+      <div style="margin-top:84px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">What We Believe</div>
+      <div style="margin-top:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+        <div style="padding:24px 26px;background:linear-gradient(180deg,rgba(28,18,42,.6),rgba(18,11,28,.6));border:1px solid rgba(239,98,169,.22);font-size:16px;line-height:1.5;color:#ece6f2;">Every gift tells a story.</div>
+        <div style="padding:24px 26px;background:linear-gradient(180deg,rgba(28,18,42,.6),rgba(18,11,28,.6));border:1px solid rgba(240,179,95,.22);font-size:16px;line-height:1.5;color:#ece6f2;">No two people are the same.</div>
+        <div style="padding:24px 26px;background:linear-gradient(180deg,rgba(28,18,42,.6),rgba(18,11,28,.6));border:1px solid rgba(154,108,216,.22);font-size:16px;line-height:1.5;color:#ece6f2;">Personalized creations leave lasting memories.</div>
+        <div style="padding:24px 26px;background:linear-gradient(180deg,rgba(28,18,42,.6),rgba(18,11,28,.6));border:1px solid rgba(91,141,239,.22);font-size:16px;line-height:1.5;color:#ece6f2;">Creativity should feel meaningful, not mass-produced.</div>
+      </div>
+
+      <!-- Our Vision -->
+      <div style="margin-top:84px;padding:48px 40px;text-align:center;background:linear-gradient(150deg,rgba(154,108,216,.16),rgba(239,98,169,.12) 60%,rgba(240,179,95,.1));border:1px solid rgba(154,108,216,.26);">
+        <div style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#9a6cd8;font-weight:600;margin-bottom:16px;">Our Vision</div>
+        <p style="margin:0 auto;max-width:54ch;font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3.4vw,40px);line-height:1.3;color:#f4efe6;text-shadow:0 2px 20px rgba(0,0,0,.4);text-wrap:pretty;">To transform Enchanted into a modern creative studio where imagination has no limits and every creation tells a unique story.</p>
+      </div>
+
+      <!-- Our Mission -->
+      <div style="margin-top:84px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">Our Mission</div>
+      <div style="margin-top:26px;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:baseline;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.2);font-size:clamp(16px,1.8vw,20px);color:#e7e0ee;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:19px;color:#f0b35f;">01</span>Create meaningful personalized gifts.</div>
+        <div style="display:flex;align-items:baseline;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.2);font-size:clamp(16px,1.8vw,20px);color:#e7e0ee;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:19px;color:#ef62a9;">02</span>Deliver exceptional customer experiences.</div>
+        <div style="display:flex;align-items:baseline;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.2);font-size:clamp(16px,1.8vw,20px);color:#e7e0ee;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:19px;color:#9a6cd8;">03</span>Blend creativity with innovation.</div>
+        <div style="display:flex;align-items:baseline;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.2);font-size:clamp(16px,1.8vw,20px);color:#e7e0ee;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:19px;color:#5b8def;">04</span>Support local creativity and artistic expression.</div>
+        <div style="display:flex;align-items:baseline;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.2);border-bottom:1px solid rgba(154,108,216,.2);font-size:clamp(16px,1.8vw,20px);color:#e7e0ee;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:19px;color:#f0b35f;">05</span>Build a trusted brand known for quality and originality.</div>
+      </div>
+
+      <!-- Our Team -->
+      <div style="margin-top:88px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">Our Team</div>
+      <h2 style="margin:14px 0 32px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(30px,5vw,58px);line-height:1.02;">The people behind Enchanted</h2>
+
+      <div class="ed-spread">
+        <div class="ed-inner">
+
+          <div class="ed-wm" style="top:34px;left:50%;transform:translateX(-50%);">vision</div>
+          <div class="ed-wm" style="bottom:10px;left:33%;transform:translateX(-50%);">power</div>
+          <div class="ed-wm" style="bottom:10px;left:71%;transform:translateX(-50%);">legacy</div>
+
+          <span class="ed-heart" style="top:15%;left:24%;">♥</span>
+          <span class="ed-heart" style="top:55%;left:20%;">♥</span>
+          <span class="ed-heart" style="top:33%;left:90%;">♥</span>
+          <span class="ed-heart" style="top:7%;left:63%;font-size:19px;">♥</span>
+
+          <!-- center group photo -->
+          <div class="ed-photo">
+            <image-slot id="team-group" placeholder="Drop the team photo" shape="rect" fit="contain" src="https://i.vgy.me/QCfx3M.png" style="position: absolute; left: -325px; top: -308px; width: 1387px; height: 1840px"></image-slot>
+          </div>
+
+          <!-- Richard — top left -->
+          <div class="ed-block r1c1">
+            <div class="ed-trait">LEADERSHIP</div>
+            <p class="ed-desc">A strategic mind with a relentless drive for excellence. He turns bold ideas into actionable plans and builds strong foundations for sustainable growth.</p>
+            <div class="ed-rule"></div>
+            <div class="ed-keys">STRATEGY &nbsp;|&nbsp; FOCUS<br>INNOVATION &nbsp;|&nbsp; EXECUTION<br>GROWTH &nbsp;|&nbsp; DISCIPLINE</div><div class="ed-name" style="color: #f3ce93">Era<br>Istrafi</div>
+            
+          </div>
+
+          <!-- Kiara — bottom left -->
+          <div class="ed-block r2c1">
+            <div class="ed-trait">TIMELESS IMPACT</div>
+            <p class="ed-desc">Success isn't about trends—it's about creating value that lasts. She builds businesses and relationships that stand the test of time and inspire future generations.</p>
+            <div class="ed-rule"></div>
+            <div class="ed-keys">SUSTAINABILITY &nbsp;|&nbsp; VALUE<br>LEADERSHIP &nbsp;|&nbsp; LONGEVITY<br>LEGACY &nbsp;|&nbsp; TRUST</div>
+            <div class="ed-name" style="color: #f3ce93">Kiara<br>Faust</div>
+          </div>
+
+          <!-- Era — top right -->
+          
+
+          <!-- Timeless — bottom right -->
+          
+
+        </div>
+      <div class="ed-name" style="transform: translateX(30px); width: 371px; height: 136px; position: fixed; left: 1490px; top: 347px; color: #f3ce93"><span style="font-size: clamp(40px, 4.6vw, 70px); letter-spacing: 0.005em; background-color: initial;">Richard</span><br><span style="font-size: clamp(40px, 4.6vw, 70px); letter-spacing: 0.005em; background-color: initial;">Miller</span></div><div class="ed-block r2c3" style="position: absolute; left: 1735px; top: 625px; width: 219px; height: 278px">
+            <div class="ed-trait">CREATIVITY</div>
+            <p class="ed-desc">An artist with a fearless imagination. She sees opportunities where others don't and turns creativity into powerful solutions that leave a lasting impact.</p>
+            <div class="ed-rule"></div>
+            <div class="ed-keys">INNOVATION &nbsp;|&nbsp; BRANDING<br>DESIGN &nbsp;|&nbsp; STORYTELLING<br>VISION &nbsp;|&nbsp; ORIGINALITY</div>
+          </div><div class="ed-block r1c3" style="position: absolute; left: 1618px; top: 31px">
+            <div class="ed-trait">INFLUENCE</div>
+            <p class="ed-desc">A brand is more than appearance—it's impact. She builds powerful identities that inspire, connect, and stand out in a crowded marketplace.</p>
+            <div class="ed-rule"></div>
+            <div class="ed-keys">BRANDING &nbsp;|&nbsp; MARKETING<br>POSITIONING &nbsp;|&nbsp; IMPACT<br>AUTHENTICITY &nbsp;|&nbsp; INFLUENCE</div>
+            
+          </div></div>
+
+      <!-- Our Portfolio -->
+      <div style="margin-top:96px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">Our Portfolio</div>
+      <h2 style="margin:14px 0 6px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(30px,5vw,58px);line-height:1.02;">Previous Projects</h2>
+      <p style="margin:0;max-width:56ch;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2vw,24px);line-height:1.4;color:#efe2cf;">A look at recent work we've brought to life.</p>
+
+      <div class="pf-list">
+
+        <div class="pf-row">
+          <div class="pf-img"><image-slot id="pf-1" src="https://i.vgy.me/m1CQBj.png" placeholder="Drop project image" shape="rect"></image-slot></div>
+          <div class="pf-text">
+            <div class="pf-num">01</div>
+            <h3 class="pf-title">Shawty on Duty</h3>
+            <div class="pf-type">Branding &amp; Website</div>
+          </div>
+        </div>
+
+        <div class="pf-row">
+          <div class="pf-text right">
+            <div class="pf-num">02</div>
+            <h3 class="pf-title">Customized Notebook for Rocket ji &amp; Bella Cooper</h3>
+            <div class="pf-type">Custom Notebook</div>
+          </div>
+          <div class="pf-img"><image-slot id="pf-2" src="https://i.vgy.me/Sd6FME.png" placeholder="Drop project image" shape="rect"></image-slot></div>
+        </div>
+
+        <div class="pf-row">
+          <div class="pf-img"><image-slot id="pf-3" src="https://i.vgy.me/3pGnc3.png" placeholder="Drop project image" shape="rect"></image-slot></div>
+          <div class="pf-text">
+            <div class="pf-num">03</div>
+            <h3 class="pf-title">Amore Business Proposal Design</h3>
+            <div class="pf-type">Proposal Design</div>
+          </div>
+        </div>
+
+        <div class="pf-row">
+          <div class="pf-text right">
+            <div class="pf-num">04</div>
+            <h3 class="pf-title">Personalized Sticker Collections</h3>
+            <div class="pf-type">Sticker Collection</div>
+          </div>
+          <div class="pf-img"><image-slot id="pf-4" src="https://i.vgy.me/YrJBJ2.png" placeholder="Drop project image" shape="rect"></image-slot></div>
+        </div>
+
+        <div class="pf-row">
+          <div class="pf-img"><image-slot id="pf-5" src="https://i.vgy.me/2u94NQ.png" placeholder="Drop project image" shape="rect"></image-slot></div>
+          <div class="pf-text">
+            <div class="pf-num">05</div>
+            <h3 class="pf-title">Battleground Domination Posters</h3>
+            <div class="pf-type">Poster Series</div>
+          </div>
+        </div>
+
+      </div>
+    </div></div>
+
+  <!-- ============ BUSINESS PLAN (premium overlay) ============ -->
+  <div id="biz-plan" style="position:fixed;inset:0;z-index:300;opacity:0;pointer-events:none;overflow-y:auto;transition:opacity .6s ease;background:rgba(13,9,18,.32);backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);">
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(12,8,18,.34) 0%,rgba(12,8,18,.16) 28%,rgba(12,8,18,.3) 76%,rgba(10,7,14,.5) 100%);"></div>
+
+    <button id="biz-close" type="button" style="position:fixed;top:24px;right:24px;display:flex;align-items:center;gap:9px;padding:11px 20px 11px 15px;border-radius:0;background:rgba(16,10,24,.66);border:1px solid rgba(255,255,255,.26);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;z-index:5;backdrop-filter:blur(8px);">
+      <span style="font-size:17px;line-height:1;">←</span> Back
+    </button>
+
+    <div style="position:relative;max-width:1080px;margin:0 auto;padding:13vh 32px 12vh;font-family:'Hanken Grotesk',system-ui,sans-serif;color:#f3ead9;">
+
+      <!-- header -->
+      <div style="font-size:12px;letter-spacing:.46em;text-transform:uppercase;color:#f0b35f;font-weight:600;margin-bottom:20px;">Enchanted · Confidential</div>
+      <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(46px,8vw,104px);line-height:.94;letter-spacing:.01em;text-shadow:0 0 60px rgba(239,98,169,.3);">Business Plan</h1>
+
+      <!-- Launch & Brand Awareness -->
+      <div style="margin-top:34px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">The first month</div>
+      <h2 style="margin:12px 0 18px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,4.4vw,52px);line-height:1.02;">Launch &amp; Brand Awareness</h2>
+      <p style="margin:0;max-width:66ch;font-size:clamp(16px,1.7vw,21px);line-height:1.7;color:#e3dbe8;">The first month will focus on establishing Enchanted as a recognizable creative brand, building a strong customer base, and introducing our premium personalized services to the city.</p>
+
+      <!-- Revenue Distribution -->
+      <div style="margin-top:64px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">Revenue distribution</div>
+      <h2 style="margin:12px 0 14px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(26px,4vw,46px);line-height:1.04;">A balanced business model</h2>
+      <p style="margin:0 0 36px;max-width:66ch;font-size:16px;line-height:1.7;color:#cdc6d6;">To maintain a balanced business model, Enchanted spreads revenue across multiple categories of products and services.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px 56px;align-items:start;">
+
+        <!-- bar graph -->
+        <div style="display:flex;flex-direction:column;gap:22px;">
+          <!-- Boutique Items 40-50% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Boutique Items</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#ef62a9;">40–50%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:90%;height:100%;background:linear-gradient(90deg,#ef62a9,#cf3f8c);box-shadow:0 0 18px rgba(239,98,169,.4);"></div></div>
+          </div>
+          <!-- Personalized Gifts 30-40% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Personalized Gifts &amp; Keepsakes</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f0b35f;">30–40%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:70%;height:100%;background:linear-gradient(90deg,#f0b35f,#d98e34);box-shadow:0 0 18px rgba(240,179,95,.35);"></div></div>
+          </div>
+          <!-- Memory Books 10-20% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Memory Books &amp; Journals</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#9a6cd8;">10–20%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:30%;height:100%;background:linear-gradient(90deg,#9a6cd8,#6f4aa8);box-shadow:0 0 18px rgba(154,108,216,.35);"></div></div>
+          </div>
+          <!-- Websites & Invitations 5% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Customized Websites &amp; Invitations</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#5b8def;">5%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:10%;height:100%;background:linear-gradient(90deg,#5b8def,#3d6bd0);box-shadow:0 0 18px rgba(91,141,239,.35);"></div></div>
+          </div>
+          <!-- Events 10% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Events</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#5fcf9e;">10%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:20%;height:100%;background:linear-gradient(90deg,#5fcf9e,#3aa67a);box-shadow:0 0 18px rgba(95,207,158,.35);"></div></div>
+          </div>
+          <!-- Brand Kits 2-3% -->
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:9px;"><span style="font-size:15px;color:#ece4f0;">Brand Kits &amp; Partnerships</span><span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#e0843c;">2–3%</span></div>
+            <div style="height:12px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden;"><div style="width:5%;height:100%;background:linear-gradient(90deg,#e0843c,#c2641f);box-shadow:0 0 18px rgba(224,132,60,.35);"></div></div>
+          </div>
+        </div>
+
+        <!-- table -->
+        <div style="border:1px solid rgba(154,108,216,.24);background:rgba(20,13,30,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <div style="display:flex;justify-content:space-between;padding:16px 22px;background:rgba(239,98,169,.12);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#e9c39c;font-weight:600;">
+            <span>Category</span><span>Share</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#ef62a9;"></span>Boutique Items</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">40–50%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#f0b35f;"></span>Personalized Gifts &amp; Keepsakes</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">30–40%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#9a6cd8;"></span>Memory Books &amp; Journals</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">10–20%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#5b8def;"></span>Customized Websites &amp; Invitations</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">5%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#5fcf9e;"></span>Events</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">10%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 22px;border-top:1px solid rgba(154,108,216,.16);"><span style="display:flex;align-items:center;gap:11px;font-size:15px;color:#e7dfee;"><span style="width:10px;height:10px;flex:none;background:#e0843c;"></span>Brand Kits &amp; Partnerships</span><span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#f3ead9;">2–3%</span></div>
+        </div>
+
+      </div>
+
+      <!-- Financial Targets after Month 1 -->
+      <div style="margin-top:72px;font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#ef62a9;font-weight:600;">After month 1</div>
+      <h2 style="margin:12px 0 14px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(26px,4vw,46px);line-height:1.04;">Financial Targets</h2>
+      <p style="margin:0 0 34px;max-width:66ch;font-size:16px;line-height:1.7;color:#cdc6d6;">Based on the values above and current market demand, an estimated Month&nbsp;1 target would be:</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(154,108,216,.2);border:1px solid rgba(154,108,216,.2);overflow:hidden;">
+        <div style="padding:32px 28px;background:linear-gradient(180deg,rgba(24,15,38,.7),rgba(16,10,26,.7));">
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9b93ab;">Total Customers</div>
+          <div style="margin-top:12px;font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.6vw,44px);font-weight:600;color:#ef62a9;line-height:1;">80–100</div>
+          <div style="margin-top:8px;font-size:13px;color:#b3aabf;">customers</div>
+        </div>
+        <div style="padding:32px 28px;background:linear-gradient(180deg,rgba(24,15,38,.7),rgba(16,10,26,.7));">
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9b93ab;">Average Order Value</div>
+          <div style="margin-top:12px;font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.6vw,44px);font-weight:600;color:#f0b35f;line-height:1;">$7.5K–$10K</div>
+          <div style="margin-top:8px;font-size:13px;color:#b3aabf;">per order</div>
+        </div>
+        <div style="padding:32px 28px;background:linear-gradient(180deg,rgba(24,15,38,.7),rgba(16,10,26,.7));">
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9b93ab;">Projected Monthly Revenue</div>
+          <div style="margin-top:12px;font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.6vw,44px);font-weight:600;color:#9a6cd8;line-height:1;">$400K–$700K</div>
+          <div style="margin-top:8px;font-size:13px;color:#b3aabf;">in month 1</div>
+        </div>
+      </div>
+
+      <!-- divider into the roadmap -->
+      <div style="margin:88px 0 0;height:1px;background:linear-gradient(90deg,rgba(239,98,169,0),rgba(239,98,169,.4),rgba(239,98,169,0));"></div>
+
+      <h1 style="margin:64px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,90px);line-height:.94;letter-spacing:.01em;text-shadow:0 0 60px rgba(239,98,169,.3);">Business Growth Roadmap</h1>
+      <p style="margin:26px 0 0;max-width:64ch;font-size:clamp(17px,1.8vw,22px);line-height:1.7;color:#e3dbe8;">Brand growth for Enchanted is not measured solely by the number of orders we complete, but by the impact and recognition we create within the community. By continuously introducing new creative services, forming long-term partnerships, embracing modern technologies, and maintaining a distinctive brand identity, our goal is to transform Enchanted from a storefront into a creative ecosystem that customers and businesses continuously return to.</p>
+
+      <!-- Customer Experience -->
+      <div style="margin-top:72px;padding:38px 36px;border-radius:0;background:rgba(28,18,42,.42);border:1px solid rgba(239,98,169,.26);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+        <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;">
+          <span style="font-size:30px;line-height:1;">💜</span>
+          <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1;color:#ef62a9;">Customer Experience</h2>
+        </div>
+        <p style="margin:14px 0 24px;font-size:clamp(16px,1.7vw,20px);font-style:italic;color:#d7cfe0;">Loyalty, quality, premium service.</p>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0;">
+          <li style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(239,98,169,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#ef62a9;">✦</span>Lots of pre-made designs to choose from.</li>
+          <li style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(239,98,169,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#ef62a9;">✦</span>Fully functional Design Request portal to avoid unnecessary delays.</li>
+          <li style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(239,98,169,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#ef62a9;">✦</span>Priority service options for urgent or premium requests.</li>
+          <li style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(239,98,169,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#ef62a9;">✦</span>Signature packaging.</li>
+          <li style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(239,98,169,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#ef62a9;">✦</span>Customer feedback forms.</li>
+        </ul>
+      </div>
+
+      <!-- Creative Innovation -->
+      <div style="margin-top:28px;padding:38px 36px;border-radius:0;background:rgba(34,24,18,.42);border:1px solid rgba(240,179,95,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+        <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;">
+          <span style="font-size:30px;line-height:1;">🎨</span>
+          <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1;color:#f0b35f;">Creative Innovation</h2>
+        </div>
+        <p style="margin:14px 0 24px;font-size:clamp(16px,1.7vw,20px);font-style:italic;color:#d7cfe0;">New products, technology, unique collections.</p>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0;">
+          <li style="padding:16px 0;border-top:1px solid rgba(240,179,95,.16);font-size:16px;line-height:1.6;color:#dad2e2;"><span style="color:#f0b35f;font-weight:600;">Technology-driven creativity.</span> While anyone can generate an idea using AI, the true difference lies in thoughtful customization, refinement, and the attention to detail.
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;padding-left:18px;border-left:2px solid rgba(240,179,95,.3);">
+              <span style="font-size:15px;color:#c2bacf;">•&nbsp; Hassle-free and fully customizable websites.</span>
+              <span style="font-size:15px;color:#c2bacf;">•&nbsp; Interactive invitation cards.</span>
+            </div>
+          </li>
+          <li style="display:flex;gap:14px;padding:16px 0;border-top:1px solid rgba(240,179,95,.16);font-size:16px;line-height:1.55;color:#dad2e2;"><span style="flex:none;color:#f0b35f;">✦</span><span><span style="font-weight:600;color:#f0b35f;">Imported &amp; custom items.</span> Sunflower item popular — can also add custom stickers here.</span></li>
+        </ul>
+      </div>
+
+      <!-- Strategic Partnerships -->
+      <div style="margin-top:28px;padding:38px 36px;border-radius:0;background:rgba(24,18,42,.42);border:1px solid rgba(154,108,216,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+        <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;">
+          <span style="font-size:30px;line-height:1;">🤝</span>
+          <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1;color:#9a6cd8;">Strategic Partnerships</h2>
+        </div>
+        <p style="margin:14px 0 18px;font-size:clamp(16px,1.7vw,20px);font-style:italic;color:#d7cfe0;">Businesses, startups, events, collaborations.</p>
+        <p style="margin:0 0 26px;max-width:66ch;font-size:16px;line-height:1.7;color:#cdc6d6;">Our goal is not to create one-time collaborations, but to build long-term creative partnerships where Enchanted becomes the go-to destination for businesses, organizations, and events requiring personalized experiences, branding, and creative solutions.</p>
+        <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0;counter-reset:partner;">
+          <li style="display:flex;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.18);font-size:16px;line-height:1.6;color:#dad2e2;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#9a6cd8;width:30px;">1</span>Partner with local businesses like Casino, Chibi Charms, etc. to bring together a community of people dedicated to the gifting business.</li>
+          <li style="display:flex;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.18);font-size:16px;line-height:1.6;color:#dad2e2;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#9a6cd8;width:30px;">2</span>Collaborate with photographers and event planners.</li>
+          <li style="display:flex;gap:18px;padding:18px 0;border-top:1px solid rgba(154,108,216,.18);font-size:16px;line-height:1.6;color:#dad2e2;"><span style="flex:none;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#9a6cd8;width:30px;">3</span>Provide Brand Kits &amp; Business Identity packages for new &amp; emerging businesses — becoming their long-term creative partners, providing ad posters, printable flyers, and more.</li>
+        </ol>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- ============ THE BOUTIQUE — WHAT WE SELL (frosted catalog over the wall) ============ -->
+  <div id="shop-cat" style="position:fixed;inset:0;z-index:300;opacity:0;pointer-events:none;overflow-y:auto;transition:opacity .65s ease;background:rgba(13,9,15,.5);backdrop-filter:blur(22px) saturate(116%);-webkit-backdrop-filter:blur(22px) saturate(116%);">
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(12,8,14,.5) 0%,rgba(12,8,14,.2) 26%,rgba(12,8,14,.34) 74%,rgba(10,7,12,.66) 100%);"></div>
+
+    <button id="shop-close" type="button" style="position:fixed;top:24px;right:24px;display:flex;align-items:center;gap:9px;padding:11px 20px 11px 15px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.28);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;z-index:5;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+      <span style="font-size:17px;line-height:1;">←</span> Back to the wall
+    </button>
+
+    <div style="position:relative;max-width:1120px;margin:0 auto;padding:13vh 32px 12vh;font-family:'Hanken Grotesk',system-ui,sans-serif;color:#f4efe6;">
+
+      <div id="shop-home">
+        <div style="font-size:12px;letter-spacing:.46em;text-transform:uppercase;color:#d9b88a;font-weight:600;margin-bottom:20px;">Enchanted · The Boutique</div>
+        <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(46px,8vw,100px);line-height:.96;letter-spacing:.01em;">What We Sell</h1>
+        <p style="margin:24px 0 0;max-width:60ch;font-size:clamp(16px,1.8vw,21px);line-height:1.7;color:#d8cfc3;">Everything Enchanted makes, gathered by collection. Choose a category to browse the pieces inside — from fresh florals and keepsakes to custom websites and interactive gift cards.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:24px;margin-top:60px;">
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-cards" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/2BsumK.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="cards" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Cards</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">For every feeling</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-flowers" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/McGt1K.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="flowers" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Flowers</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Made fresh daily</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-jewellery" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/B58W4L.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="jewellery" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Jewellery</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Worn close to the heart</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-snacks" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/nDsoRL.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="snacks" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Snacks</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Sweet little treats</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-misc" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/uM1MMU.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="misc" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Misc</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Curious little finds</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-seasonal" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/MVo68j.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="seasonal" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Seasonal</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Here for a moment</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-stickers" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/HFTnhM.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="stickers" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Custom Stickers</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Stick it anywhere</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-notebooks" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/jOuLz1.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="notebooks" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Notebook Designing</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Pages worth keeping</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-branding" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/0O28ZC.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="branding" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Brand Identity Building</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Look the part</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-websites" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/9k7q4t.jpg" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="websites" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Website</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Your space online</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        <div class="shop-tile" style="display:flex;flex-direction:column;background:rgba(30,22,32,.42);border:1px solid rgba(245,238,226,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <image-slot id="slot-cat-giftcards" style="width:100%;height:152px;display:block;" shape="rect" src="https://i.vgy.me/V2Cdvn.png" placeholder="Drop image"></image-slot>
+          <div class="shop-tile-foot" data-cat="giftcards" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;cursor:pointer;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#f4efe6;line-height:1.05;">Interactive Gift Cards</div>
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#d9b88a;margin-top:5px;">Surprise, delivered</div>
+            </div>
+            <span style="font-size:20px;color:#ef62a9;flex:none;">→</span>
+          </div>
+        </div>
+        </div>
+        <div style="margin-top:64px;text-align:center;font-size:13px;letter-spacing:.06em;color:#a99e90;">Selection evolves with the seasons.</div>
+      </div>
+
+      <div class="shop-page" data-page="cards" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Cards</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">For every feeling</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-cards-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/TMHQE6.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Customized Cards</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-cards-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/Og4Vod.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Occasion Cards</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-cards-2" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/fsc4Dy.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Greeting Cards</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-cards-3" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/uCRdwJ.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Holiday Cards</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-cards-4" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/EuJbMi.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Romantic Cards</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="flowers" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Flowers</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Made fresh daily</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-flowers-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/8oYP3Y.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Classic Flowers</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-flowers-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/sDlErf.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Premium Flowers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="jewellery" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Jewellery</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Worn close to the heart</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-jewellery-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/TLeUyI.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Everyday Essentials</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-jewellery-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/qYAxVR.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Engraved</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-jewellery-2" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/gC9Zn3.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Anniversary &amp; Weddings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="snacks" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Snacks</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Sweet little treats</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-snacks-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/ulJrVG.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Berries Delights</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-snacks-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/5O9RQm.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Juices &amp; Potions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="misc" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Misc</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Curious little finds</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-misc-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/AQBUer.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Pretty Pink Cow</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-misc-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/ZNDSRG.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Enchanted Crystal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="seasonal" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Seasonal</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Here for a moment</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-seasonal-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/YFwdzw.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Unicorn Plush</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-seasonal-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/GvkJ27.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Pride Bouquet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="stickers" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Custom Stickers</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Stick it anywhere</p>
+        <div style="margin-top:56px;padding:64px 32px;text-align:center;border:1px dashed rgba(245,238,226,.18);background:rgba(30,22,32,.3);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#e9dccb;">New designs coming soon</div>
+          <div style="margin-top:10px;font-size:14px;letter-spacing:.04em;color:#a99e90;">This collection is being curated — check back shortly.</div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="notebooks" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Notebook Designing</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Pages worth keeping</p>
+        <div style="margin-top:56px;padding:64px 32px;text-align:center;border:1px dashed rgba(245,238,226,.18);background:rgba(30,22,32,.3);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#e9dccb;">New designs coming soon</div>
+          <div style="margin-top:10px;font-size:14px;letter-spacing:.04em;color:#a99e90;">This collection is being curated — check back shortly.</div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="branding" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Brand Identity Building</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Look the part</p>
+        <div style="margin-top:56px;padding:64px 32px;text-align:center;border:1px dashed rgba(245,238,226,.18);background:rgba(30,22,32,.3);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#e9dccb;">New designs coming soon</div>
+          <div style="margin-top:10px;font-size:14px;letter-spacing:.04em;color:#a99e90;">This collection is being curated — check back shortly.</div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="websites" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Website</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Your space online</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-websites-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/K7JqbU.jpg" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Portfolio Site</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-websites-1" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/9k7q4t.jpg" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Online Storefront</div>
+            </div>
+          </div>
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-websites-2" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/2I1gLL.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Proposal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-page" data-page="giftcards" style="display:none;">
+        <button type="button" data-shop-back="" style="display:inline-flex;align-items:center;gap:9px;padding:10px 18px 10px 13px;margin-bottom:34px;border-radius:0;background:rgba(20,14,22,.5);border:1px solid rgba(245,238,226,.24);color:#f3ead9;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);"><span style="font-size:17px;line-height:1;">←</span> All categories</button>
+        <div style="font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:#d9b88a;font-weight:600;">Enchanted · The Boutique</div>
+        <h1 style="margin:14px 0 0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,7vw,82px);line-height:.98;letter-spacing:.01em;">Interactive Gift Cards</h1>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,19px);letter-spacing:.02em;color:#cdbfae;">Surprise, delivered</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:48px;">
+          <div class="shop-card" style="display:flex;flex-direction:column;background:rgba(30,22,32,.46);border:1px solid rgba(245,238,226,.14);">
+            <image-slot id="slot-giftcards-0" style="width:100%;aspect-ratio:1/1;display:block;" shape="rect" src="https://i.vgy.me/yRuIYR.png" placeholder="Drop image"></image-slot>
+            <div style="padding:16px 16px 20px;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#f4efe6;line-height:1.15;">Animated Card</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100vh&quot;},&quot;cameraPush&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:5.5,&quot;min&quot;:3,&quot;max&quot;:8,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;},&quot;parallaxStrength&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this._tick = this._tick.bind(this);
+    this._loop = this._loop.bind(this);
+    this._onScroll = this._onScroll.bind(this);
+    this._cinP = null;
+    this._roomP = null;
+    this._extHidden = false;
+    this._loopRunning = false;
+    this._openFocus = this._openFocus.bind(this);
+    this._closeFocus = this._closeFocus.bind(this);
+    this._raf = null;
+    this._focus = null;
+
+    this._timers = [];
+    this._el = {};
+    ['cin-wrap','cin-ext-wrap','cin-ext','cin-ext-grade','cin-ext-vig','cin-glow','cin-intro','cin-intrograd','cin-interior','cin-title',
+     'room-wrap','room-cam','room-hud','room-focus','focus-img','focus-imgwrap','focus-caption','focus-kicker','focus-title','focus-text','focus-enchanted-btn','focus-aboutus-btn','focus-biz-btn','focus-shop-btn','focus-plain','focus-travel','biz-plan','shop-cat','about-enchanted','about-us'
+    ].forEach(id => { this._el[id] = document.getElementById(id); });
+
+    this._walls = {
+      // the counter sits on the LEFT wall: step into the room centre first, then turn left to face it
+      team:      { focus: 'translate(-50%,-50%) translate(45%,-7%) scale(2.45)', image: 'assets/counter.png', cta: 'aboutus',
+                   kicker: 'About Us', title: 'Our Story', text: 'A simple scrapbook started everything. Step inside to meet the people, the beliefs and the vision behind Enchanted.' },
+      counter:   { center: 'translate(-50%,-50%) translate(20%,-7%) scale(1.55)', focus: 'translate(-50%,-50%) translate(84%,-20%) scale(2.85)', image: 'assets/counter.png', cta: 'enchanted',
+                   kicker: 'About Enchanted', title: 'What is Enchanted?', text: 'A creative gifting studio that turns feelings into lasting memories. Take a closer look at what makes it enchanted.' },
+      signature: { focus: 'translate(-50%,-50%) translate(-7%,13%) scale(2.4)',  image: 'assets/signature-wall.png', cta: 'business',
+                   kicker: 'The Business', title: 'The Enchanted Business Plan', text: 'A boutique gift-and-floral destination built around one feeling. View the full plan — the numbers, the revenue streams and the launch timeline.' },
+      boutique:  { focus: 'translate(-50%,-50%) translate(-80%,8%) scale(2.35)', image: 'assets/boutique-wall.png', cta: 'shop',
+                   kicker: 'The boutique', title: 'Browse & discover', text: 'Curated shelves of gifts, apparel and fresh florals lining the walls — room to wander, linger, and find the unexpected.' }
+    };
+
+    document.querySelectorAll('.room-hot').forEach(b => {
+      b.addEventListener('click', () => this._openFocus(b.dataset.wall));
+    });
+    const close = document.getElementById('focus-close');
+    if (close) close.addEventListener('click', this._closeFocus);
+    const bizBtn = document.getElementById('focus-biz-btn');
+    if (bizBtn) bizBtn.addEventListener('click', () => this._openBiz());
+    const enchBtn = document.getElementById('focus-enchanted-btn');
+    if (enchBtn) enchBtn.addEventListener('click', () => this._openAbout());
+    const auBtn = document.getElementById('focus-aboutus-btn');
+    if (auBtn) auBtn.addEventListener('click', () => this._openAboutUs());
+    const bizClose = document.getElementById('biz-close');
+    if (bizClose) bizClose.addEventListener('click', () => this._closeBiz());
+    const shopBtn = document.getElementById('focus-shop-btn');
+    if (shopBtn) shopBtn.addEventListener('click', () => this._openShop());
+    const shopClose = document.getElementById('shop-close');
+    if (shopClose) shopClose.addEventListener('click', () => this._closeShop());
+    const shopRoot = this._el['shop-cat'];
+    if (shopRoot) shopRoot.addEventListener('click', (ev) => {
+      const cat = ev.target.closest && ev.target.closest('[data-cat]');
+      if (cat) { this._showShopPage(cat.getAttribute('data-cat')); return; }
+      const back = ev.target.closest && ev.target.closest('[data-shop-back]');
+      if (back) { this._showShopHome(); return; }
+    });
+    const aboutClose = document.getElementById('about-close');
+    if (aboutClose) aboutClose.addEventListener('click', () => this._closeAbout());
+    const aboutUsClose = document.getElementById('about-us-close');
+    if (aboutUsClose) aboutUsClose.addEventListener('click', () => this._closeAboutUs());
+    const aboutStory = document.getElementById('about-story-btn');
+    if (aboutStory) aboutStory.addEventListener('click', () => this._openBiz());
+    this._onKey = (ev) => {
+      if (ev.key !== 'Escape') return;
+      if (this._bizOpen) this._closeBiz();
+      else if (this._shopOpen) this._closeShop();
+      else if (this._aboutOpen) this._closeAbout();
+      else if (this._aboutUsOpen) this._closeAboutUs();
+      else this._closeFocus();
+    };
+    window.addEventListener('keydown', this._onKey);
+
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll);
+    this._startLoop();
+    this._buildMosaics();
+  }
+
+  _buildMosaics() {
+    const palette = ['#ef62a9','#9a6cd8','#f0b35f','#5b8def','#d94f95','#7d54c4','#f5a3c8'];
+    const N = 18; // blocks across — large blocks so the face isn't legible
+    document.querySelectorAll('.au-photo').forEach(ph => {
+      const slot = ph.querySelector('image-slot');
+      const cv = ph.querySelector('canvas.au-mosaic');
+      if (!cv) return;
+      cv.width = N; cv.height = N;
+      const ctx = cv.getContext('2d');
+      const drawRandom = () => {
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+          ctx.fillStyle = palette[(Math.random() * palette.length) | 0];
+          ctx.fillRect(x, y, 1, 1);
+        }
+      };
+      const src = slot && slot.getAttribute('src');
+      if (src) {
+        const im = new Image();
+        im.onload = () => {
+          const s = Math.min(im.naturalWidth, im.naturalHeight);
+          ctx.imageSmoothingEnabled = true; // averages each block's colour
+          ctx.drawImage(im, (im.naturalWidth - s) / 2, (im.naturalHeight - s) / 2, s, s, 0, 0, N, N);
+          // lift saturation a touch so the mosaic reads as vivid tiles
+          ctx.globalCompositeOperation = 'saturation';
+          ctx.fillStyle = '#ff4fa3';
+          ctx.fillRect(0, 0, N, N);
+          ctx.globalCompositeOperation = 'source-over';
+        };
+        im.onerror = drawRandom;
+        im.src = src;
+      } else {
+        drawRandom();
+      }
+    });
+  }
+
+  _startLoop() {
+    if (this._loopRunning) return;
+    this._loopRunning = true;
+    this._raf = requestAnimationFrame(this._loop);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onScroll);
+    window.removeEventListener('keydown', this._onKey);
+    document.body.style.overflow = '';
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+
+  _onScroll() {
+    this._startLoop();
+  }
+
+  _loop() {
+    const vh = window.innerHeight;
+    // compute scroll targets
+    const wrap = this._el['cin-wrap'];
+    let cinTarget = 0;
+    if (wrap) {
+      const total = wrap.offsetHeight - vh;
+      cinTarget = this._clamp(-wrap.getBoundingClientRect().top / Math.max(total, 1), 0, 1);
+    }
+    const roomTarget = this._roomProgress();
+
+    if (this._cinP === null) this._cinP = cinTarget;
+    if (this._roomP === null) this._roomP = roomTarget;
+
+    // critically-damped follow toward the scroll position — smooths out hitches
+    const sm = 0.22;
+    this._cinP += (cinTarget - this._cinP) * sm;
+    this._roomP += (roomTarget - this._roomP) * sm;
+    if (Math.abs(cinTarget - this._cinP) < 0.0004) this._cinP = cinTarget;
+    if (Math.abs(roomTarget - this._roomP) < 0.0004) this._roomP = roomTarget;
+
+    this._applyCin(this._cinP);
+    if (!this._focus) this._applyRoom(this._roomP);
+
+    const settled = this._cinP === cinTarget && this._roomP === roomTarget;
+    if (settled) {
+      this._loopRunning = false;
+      this._raf = null;
+    } else {
+      this._raf = requestAnimationFrame(this._loop);
+    }
+  }
+
+  _after(ms, fn) { const id = setTimeout(fn, ms); this._timers.push(id); }
+  _clearTimers() {
+    (this._timers || []).forEach(clearTimeout);
+    this._timers = [];
+    if (this._closeTimer) { clearTimeout(this._closeTimer); this._closeTimer = null; }
+  }
+
+  _openFocus(wall) {
+    const w = this._walls[wall];
+    if (!w) return;
+    this._clearTimers();
+    this._focus = wall;
+
+    const e = this._el;
+    const cam = e['room-cam'], F = e['room-focus'];
+    const imgw = e['focus-imgwrap'], img = e['focus-img'];
+    const cap = e['focus-caption'], plain = e['focus-plain'], travel = e['focus-travel'];
+    const easeCam = 'cubic-bezier(.5,0,.1,1)';
+
+    if (e['room-hud']) e['room-hud'].style.opacity = '0';
+    document.body.style.overflow = 'hidden';
+
+    // reset every overlay layer so the room-cam move plays in full view first
+    imgw.style.transition = 'none';
+    imgw.style.opacity = '0';
+    imgw.style.transform = 'scale(1.14)';
+    cap.style.opacity = '0';
+    plain.style.opacity = '0';
+    plain.style.pointerEvents = 'none';
+    F.style.opacity = '0';
+    F.style.pointerEvents = 'auto';
+    travel.style.opacity = '1';
+
+    let imgDelay;
+    if (w.center) {
+      // 1) glide into the centre of the room
+      cam.style.transition = 'transform 1.5s ' + easeCam;
+      cam.style.transform = w.center;
+      // 2) turn left to face the counter (slight overlap so the move never stops)
+      this._after(1250, () => {
+        cam.style.transition = 'transform 1.8s ' + easeCam;
+        cam.style.transform = w.focus;
+      });
+      imgDelay = 2900;
+    } else {
+      // single, slow travel straight toward the wall
+      cam.style.transition = 'transform 1.9s ' + easeCam;
+      cam.style.transform = w.focus;
+      imgDelay = 1900;
+    }
+
+    // 3) the depth image flies in toward the wall — only once the NEW image has decoded
+    this._after(imgDelay, () => {
+      if (this._focus !== wall) return;
+      F.style.opacity = '1';
+      const reveal = () => {
+        if (this._focus !== wall) return;
+        imgw.style.transition = 'opacity 1s ease, transform 1.5s cubic-bezier(.33,0,.16,1)';
+        void imgw.offsetWidth;
+        imgw.style.opacity = '1';
+        imgw.style.transform = 'scale(1)';
+        travel.style.opacity = '0';
+      };
+      img.onload = reveal;
+      img.onerror = reveal;
+      img.src = w.image;
+      if (img.complete && img.naturalWidth) reveal();
+    });
+
+    if (w.sequence === 'team') {
+      // 4) dissolve from the counter image to the plain team screen
+      this._after(imgDelay + 1450, () => {
+        if (this._focus !== wall) return;
+        imgw.style.opacity = '0';
+        imgw.style.transform = 'scale(1.05)';
+        plain.style.opacity = '1';
+        plain.style.pointerEvents = 'auto';
+      });
+    } else if (w.sequence === 'about') {
+      // once the camera has reached the wall, reveal the About / What is Enchanted page
+      this._after(imgDelay + 1150, () => {
+        if (this._focus !== wall) return;
+        this._openAbout();
+      });
+    } else if (w.sequence === 'aboutus') {
+      // once the camera has reached the counter, reveal the About Us / Our Story page
+      this._after(imgDelay + 1150, () => {
+        if (this._focus !== wall) return;
+        this._openAboutUs();
+      });
+    } else if (w.sequence === 'business') {
+      // once the camera has reached the wall, reveal the Business Plan
+      this._after(imgDelay + 1150, () => {
+        if (this._focus !== wall) return;
+        this._openBiz();
+      });
+    } else {
+      if (e['focus-kicker']) e['focus-kicker'].textContent = w.kicker || '';
+      if (e['focus-title']) e['focus-title'].textContent = w.title || '';
+      if (e['focus-text']) e['focus-text'].textContent = w.text || '';
+      const ctaMap = { enchanted: 'focus-enchanted-btn', aboutus: 'focus-aboutus-btn', business: 'focus-biz-btn', shop: 'focus-shop-btn' };
+      ['focus-enchanted-btn','focus-aboutus-btn','focus-biz-btn','focus-shop-btn'].forEach(id => { if (e[id]) e[id].style.display = 'none'; });
+      const showId = ctaMap[w.cta];
+      if (showId && e[showId]) e[showId].style.display = 'inline-flex';
+      this._after(imgDelay + 850, () => { if (this._focus === wall) cap.style.opacity = '1'; });
+    }
+  }
+
+  _openBiz() {
+    const b = this._el['biz-plan'];
+    if (!b) return;
+    this._bizOpen = true;
+    b.scrollTop = 0;
+    b.style.opacity = '1';
+    b.style.pointerEvents = 'auto';
+  }
+
+  _closeBiz() {
+    const b = this._el['biz-plan'];
+    if (!b) return;
+    this._bizOpen = false;
+    b.style.opacity = '0';
+    b.style.pointerEvents = 'none';
+    // the Business Plan is reached straight from the wall — return to the room behind it
+    if (this._focus) this._closeFocus();
+  }
+
+  _openShop() {
+    const s = this._el['shop-cat'];
+    if (!s) return;
+    this._shopOpen = true;
+    this._showShopHome();
+    s.scrollTop = 0;
+    s.style.opacity = '1';
+    s.style.pointerEvents = 'auto';
+  }
+
+  _showShopPage(key) {
+    const s = this._el['shop-cat'];
+    if (!s) return;
+    const home = s.querySelector('#shop-home');
+    if (home) home.style.display = 'none';
+    s.querySelectorAll('.shop-page').forEach(p => {
+      p.style.display = (p.getAttribute('data-page') === key) ? 'block' : 'none';
+    });
+    s.scrollTop = 0;
+  }
+
+  _showShopHome() {
+    const s = this._el['shop-cat'];
+    if (!s) return;
+    const home = s.querySelector('#shop-home');
+    if (home) home.style.display = 'block';
+    s.querySelectorAll('.shop-page').forEach(p => { p.style.display = 'none'; });
+    s.scrollTop = 0;
+  }
+
+  _closeShop() {
+    const s = this._el['shop-cat'];
+    if (!s) return;
+    this._shopOpen = false;
+    s.style.opacity = '0';
+    s.style.pointerEvents = 'none';
+  }
+
+  _openAbout() {
+    const a = this._el['about-enchanted'];
+    if (!a) return;
+    this._aboutOpen = true;
+    a.scrollTop = 0;
+    a.style.opacity = '1';
+    a.style.pointerEvents = 'auto';
+  }
+
+  _closeAbout() {
+    const a = this._el['about-enchanted'];
+    if (!a) return;
+    this._aboutOpen = false;
+    a.style.opacity = '0';
+    a.style.pointerEvents = 'none';
+    this._closeFocus();
+  }
+
+  _openAboutUs() {
+    const a = this._el['about-us'];
+    if (!a) return;
+    this._aboutUsOpen = true;
+    a.scrollTop = 0;
+    a.style.opacity = '1';
+    a.style.pointerEvents = 'auto';
+  }
+
+  _closeAboutUs() {
+    const a = this._el['about-us'];
+    if (!a) return;
+    this._aboutUsOpen = false;
+    a.style.opacity = '0';
+    a.style.pointerEvents = 'none';
+    this._closeFocus();
+  }
+  _closeFocus() {
+    if (!this._focus) return;
+    this._clearTimers();
+    this._focus = null;
+
+    const e = this._el;
+    const cam = e['room-cam'], F = e['room-focus'];
+    const imgw = e['focus-imgwrap'], cap = e['focus-caption'], plain = e['focus-plain'], travel = e['focus-travel'];
+
+    plain.style.opacity = '0'; plain.style.pointerEvents = 'none';
+    cap.style.opacity = '0';
+    imgw.style.transition = 'opacity .5s ease';
+    imgw.style.opacity = '0';
+    travel.style.opacity = '0';
+    F.style.opacity = '0'; F.style.pointerEvents = 'none';
+
+    // return the camera to the default interior angle & zoom
+    if (cam) {
+      cam.style.transition = 'transform 1.4s cubic-bezier(.5,0,.1,1)';
+      cam.style.transform = this._roomTransform(this._roomProgress());
+    }
+    if (e['room-hud']) e['room-hud'].style.opacity = '1';
+    document.body.style.overflow = '';
+    this._closeTimer = setTimeout(() => {
+      if (cam) cam.style.transition = '';
+      this._closeTimer = null;
+      requestAnimationFrame(this._tick);
+    }, 1450);
+  }
+
+  _roomProgress() {
+    const rwrap = this._el['room-wrap'];
+    if (!rwrap) return 0;
+    const vh = window.innerHeight;
+    return this._clamp(-rwrap.getBoundingClientRect().top / Math.max(rwrap.offsetHeight - vh, 1), 0, 1);
+  }
+  _roomTransform(rp) {
+    const tx = (0.5 - rp) * 2 * 15.5;
+    const sc = 1 + this._ease(rp) * 0.05;
+    return `translate(-50%,-50%) translateX(${tx.toFixed(2)}%) scale(${sc.toFixed(3)})`;
+  }
+
+  _tick() { this._startLoop(); }
+
+  // ---------- CINEMATIC DIVE ----------
+  _applyCin(p) {
+    const e = this._el;
+    const push = this.props.cameraPush ?? 5.5;
+    const par = this.props.parallaxStrength ?? 1;
+
+    const pp = this._ease(this._clamp(p / 0.55, 0, 1));
+    const scale = 1 + pp * push;
+    const extOp = 1 - this._clamp((p - 0.42) / 0.13, 0, 1);
+
+    // The exterior is a single isolated wrapper: one transform + one opacity write per frame,
+    // its filter rasterized once and scaled as a cached texture. We hide it with opacity (not
+    // visibility:hidden) so the texture stays warm — when fully transparent the compositor skips
+    // painting it, but scrolling back OUT reuses the cached layer instead of triggering a
+    // full-screen filtered repaint, which is what hitched on the way out.
+    if (e['cin-ext-wrap']) {
+      e['cin-ext-wrap'].style.opacity = extOp.toFixed(3);
+      // skip the transform write while invisible — no paint happens at opacity 0 anyway
+      if (extOp > 0.001) e['cin-ext-wrap'].style.transform = `scale(${scale.toFixed(3)})`;
+    }
+
+    if (e['cin-glow']) {
+      const gIn = this._clamp((p - 0.12) / 0.32, 0, 1);
+      const gOut = this._clamp((p - 0.5) / 0.08, 0, 1);
+      const gOp = gIn * (1 - gOut);
+      e['cin-glow'].style.opacity = gOp.toFixed(3);
+      // only touch the transform while the glow is actually visible
+      if (gOp > 0.001) {
+        const gScale = 0.3 + this._ease(gIn) * (push * 0.55);
+        e['cin-glow'].style.transform = `translate(-50%,-50%) scale(${gScale.toFixed(3)})`;
+      }
+    }
+    const introOut = this._clamp(p / 0.18, 0, 1);
+    if (e['cin-intro'])    { e['cin-intro'].style.opacity = (1 - introOut).toFixed(3); e['cin-intro'].style.transform = `translateY(${(-introOut * 30).toFixed(1)}px)`; }
+    if (e['cin-intrograd']) e['cin-intrograd'].style.opacity = (1 - introOut).toFixed(3);
+
+    const inOp = this._clamp((p - 0.44) / 0.14, 0, 1);
+    const q = this._clamp((p - 0.44) / 0.5, 0, 1);
+    if (e['cin-interior']) {
+      e['cin-interior'].style.opacity = inOp.toFixed(3);
+      e['cin-interior'].style.transform = `scale(${(1.16 - this._ease(q) * 0.16).toFixed(3)})`;
+    }
+    const tIn = this._clamp((p - 0.6) / 0.18, 0, 1);
+    const tOut = this._clamp((p - 0.9) / 0.1, 0, 1);
+    if (e['cin-title']) {
+      e['cin-title'].style.opacity = (tIn * (1 - tOut)).toFixed(3);
+      e['cin-title'].style.transform = `translateY(${((1 - this._ease(tIn)) * 44 * par).toFixed(1)}px)`;
+    }
+  }
+
+  // ---------- ROOM PAN (scroll moves the camera across the walls) ----------
+  _applyRoom(rp) {
+    const e = this._el;
+    const cam = e['room-cam'];
+    if (!cam) return;
+    cam.style.transform = this._roomTransform(rp);
+    if (e['room-hud']) {
+      const hOut = this._clamp((rp - 0.12) / 0.18, 0, 1);
+      e['room-hud'].style.opacity = (1 - hOut).toFixed(3);
+      e['room-hud'].style.transform = `translateY(${(-hOut * 24).toFixed(1)}px)`;
+    }
+  }
+
+  _clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  _ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
